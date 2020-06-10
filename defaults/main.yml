@@ -2,7 +2,7 @@
 raid_backend: mdraid
 
 # Allowed values: raid0, raid1, raid5, raid6, raid10
-raid_level: raid10
+#raid_level: raid10
 
 # Block devices used to build the RAID
 #raid_block_devs: [ sdb, sdc, sdd, sde ]
