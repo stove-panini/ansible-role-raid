@@ -17,7 +17,7 @@ Set the following as vars for your role. Choices in bold indicate the default.
 | raid\_backend | **mdraid**, lvmraid | |
 | raid\_level | raid0, raid1, raid5, raid6, **raid10** | |
 | raid\_block\_devs | *No default* | A list of block devices (e.g. `[ sdb, sdc, sdd, sde ]` ) |
-| raid\_name | *No Default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc.
+| raid\_name | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc.
 | create\_vdo | yes, **no** | If yes, this creates a VDO layer on your RAID. |
 | vdo\_purpose | **virtualization**, block\_storage | Choosing "virtualization" creates a logical layer 10x the size of the backing device, while "block\_storage" creates a logical layer 3x the size of the backing device. |
 | create\_fs | **yes**, no | Formats the resulting device with the XFS file system. Chunk size and stripe width are automatically tuned to the backing storage and RAID-type you choose. However, if you use VDO, it will simply use the defaults. |
