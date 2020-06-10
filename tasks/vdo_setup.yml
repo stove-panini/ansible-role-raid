@@ -10,6 +10,7 @@
 - name: Set logical size of VDO layer
   set_fact:
     vdo_logicalsize: "{{ raid_size|int * vdo_multiplier|int }}"
+    # LVM gets picky when value specified in bytes. Let's round to the nearest MB instead.
     vdo_logicalsize_mb: "{{ ((raid_size|int * vdo_multiplier|int) / 1048576)|round(0)|int }}"
 
 - name: Set VDO slabsize to 1 GB when RAID is less than 100 GB
