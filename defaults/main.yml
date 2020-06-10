@@ -18,6 +18,9 @@ create_vdo: no
 # block_storage  = logical size is  3x that of physical storage
 vdo_purpose: virtualization
 
+# A custom value can be specified for the logical size instead
+#vdo_custom_size: 6 TB
+
 # Create an XFS filesystem?
 create_fs: yes
 

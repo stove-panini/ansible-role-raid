@@ -42,3 +42,4 @@ vdo_config:
     multiplier: 3
 
 vdo_multiplier: "{{ vdo_config[vdo_purpose].multiplier }}"
+vdo_custom_size_bytes: "{{ vdo_custom_size|human_to_bytes }}"
