@@ -16,14 +16,14 @@ Tuning values are based on those recommended by [the RHEL 8 VDO documentation](h
 
 Options
 -------
-Set the following as vars for your role. Choices in bold indicate the default.
+Set the following as vars for your role. Options in bold are required. Choices in bold indicate the default.
 
 | Option | Choices | Comments |
 | ------ | ------- | -------- |
 | raid\_backend | **mdraid**, lvmraid | |
 | raid\_level | raid0, raid1, raid5, raid6, **raid10** | |
-| raid\_block\_devs | *No default* | A list of block devices (e.g. `[ sdb, sdc, sdd, sde ]` ) |
-| raid\_name | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc.
+| **raid_block_devs** | *No default* | A list of block devices (e.g. `[ sdb, sdc, sdd, sde ]` ) |
+| **raid_name** | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc.
 | create\_vdo | yes, **no** | If yes, this creates a VDO layer on your RAID. |
 | vdo\_purpose | **virtualization**, object\_storage | Choosing "virtualization" creates a logical layer 10x the size of the backing device, while "object\_storage" creates a logical layer 3x the size of the backing device. |
 | vdo\_custom\_size | *No default* | Instead of using the multipliers predefined in vdo\_purpose, you may specify a custom size. (e.g. `6 TB`, `40 GB`, etc.) |
