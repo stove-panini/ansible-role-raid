@@ -1,0 +1,44 @@
+---
+vg_name: "{{ raid_name ~ '_vg' }}"
+lv_name: "{{ raid_name ~ '_lv' }}"
+vdo_name: "{{ raid_name ~ '_vdo' }}"
+
+# NOTE: Accessing a nested var from another nested var makes ansible mad
+raid_config:
+  raid0:
+    # https://louwrentius.com/linux-raid-level-and-chunk-size-the-benchmarks.html
+    chunksize: 512
+    stripes: "{{ (raid_block_devs|length / 2)|int }}"
+  raid1:
+    chunksize: 512
+    mirrors: "{{ (raid_block_devs|length - 1)|int }}"
+  raid5:
+    chunksize: 64
+    stripes: "{{ (raid_block_devs|length - 1)|int }}"
+  raid6:
+    chunksize: 64
+    stripes: "{{ (raid_block_devs|length - 2)|int }}"
+  raid10:
+    chunksize: 512
+    mirrors: "1"
+    stripes: "{{ (raid_block_devs|length / 2)|int }}"
+
+# shortcuts
+numstripes: "{{ raid_config[raid_level].stripes }}"
+nummirrors: "{{ raid_config[raid_level].mirrors }}"
+chunksize: "{{ raid_config[raid_level].chunksize }}"
+mdraid_level: "{{ raid_level[4:] }}"
+
+# https://access.redhat.com/labs/lvmraidcalculator/
+# alignment = chunk (aka stripe) size * num datadisks
+vg_dataalignment: "{{ chunksize|int * numstripes|int }}k"
+
+# Multiplier for VDO logical size based on intended usage
+# https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/deduplicating_and_compressing_storage/deploying-vdo_deduplicating-and-compressing-storage#proc_creating-a-vdo-volume-deploying-vdo
+vdo_config:
+  virtualization:
+    multiplier: 10
+  object_storage:
+    multiplier: 3
+
+vdo_multiplier: "{{ vdo_config[vdo_purpose].multiplier }}"

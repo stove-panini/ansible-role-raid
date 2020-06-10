@@ -1,0 +1,26 @@
+# Allowed values: mdraid, lvmraid
+raid_backend: mdraid
+
+# Allowed values: raid0, raid1, raid5, raid6, raid10
+raid_level: raid10
+
+# Block devices used to build the RAID
+#raid_block_devs: [ sdb, sdc, sdd, sde ]
+
+# This will also become part of the lv, vg, and vdo names
+#raid_name: my_cool_raid
+
+# Create a Virtual Data Optimizer layer?
+create_vdo: no
+
+# Allowed values:
+# virtualization = logical size is 10x that of physical storage
+# block_storage  = logical size is  3x that of physical storage
+vdo_purpose: virtualization
+
+# Create an XFS filesystem?
+create_fs: yes
+
+# Add to fstab? If so, where to mount?
+add_to_fstab: yes
+mountpoint: /mnt/{{ raid_name }}

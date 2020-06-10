@@ -1,0 +1,13 @@
+---
+- name: Convert lvmraid to lvmvdo pool
+  command:
+    cmd: >
+      lvconvert -y
+        --type vdo-pool
+        --virtualsize {{ vdo_logicalsize_mb }}M
+        --name {{ vdo_name }}
+        --config 'allocation/vdo_use_sparse_index={{ vdo_use_sparse_index|default('0') }}
+                  allocation/vdo_index_memory_size_mb={{ vdo_index_memory_size_mb }}
+                  allocation/vdo_slab_size_mb={{ vdo_slab_size_mb }}'
+        {{ vg_name }}/{{ lv_name }}
+  when: vdo_name not in ansible_lvm.lvs

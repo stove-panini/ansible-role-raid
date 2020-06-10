@@ -1,0 +1,18 @@
+---
+- name: Set standard mkfs opts
+  set_fact:
+    # su = lvm stripe size, sw = # of data disks
+    mkfs_opts: "-d su={{ chunksize }}k,sw={{ numstripes }}"
+  when: not create_vdo|bool
+
+- name: Set VDO mkfs opts
+  set_fact:
+    # Do not attempt to discard blocks at mkfs time
+    mkfs_opts: -K
+  when: create_vdo|bool
+
+- name: Format {{ lv_name }} as XFS
+  filesystem:
+    fstype: xfs
+    dev: "{{ raid_device }}"
+    opts: "{{ mkfs_opts }}"

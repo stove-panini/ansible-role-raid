@@ -1,0 +1,54 @@
+---
+- name: Define options for mirrored RAID
+  set_fact:
+    lv_opts: --mirrors {{ nummirrors }}
+  when: raid_level == 'raid1'
+
+- name: Define options for striped RAID
+  set_fact:
+    lv_opts: --stripes {{ numstripes }}
+  when: >
+    raid_level == 'raid0' or
+    raid_level == 'raid5' or
+    raid_level == 'raid6'
+
+- name: Define options for striped + mirrored RAID
+  set_fact:
+    lv_opts: --stripes {{ numstripes }} --mirrors {{ nummirrors }}
+  when: raid_level == 'raid10'
+
+- name: Set new lv_name if using VDO
+  set_fact:
+    lv_name: "{{ raid_name ~ '_vpool' }}"
+  when: create_vdo|bool
+
+# NOTE: this also creates the PVs
+- name: Create volume group {{ vg_name }}
+  lvg:
+    state: present
+    vg: "{{ vg_name }}"
+    vg_options: --dataalignment {{ vg_dataalignment }}
+    pvs: "/dev/disk/by-partlabel/{{ partition_names|join(',/dev/disk/by-partlabel/') }}"
+
+- name: Create RAID logical volume {{ lv_name }}
+  lvol:
+    state: present
+    active: yes
+    vg: "{{ vg_name }}"
+    lv: "{{ lv_name }}"
+    size: 100%FREE
+    opts: --type {{ raid_level }} {{ lv_opts }}
+    # 100%FREE makes lvol non-idempotent, so we must specify shrink=no
+    shrink: no
+
+- name: Refresh LVM facts
+  setup:
+    filter: ansible_lvm
+
+- name: Set raid_device
+  set_fact:
+    raid_device: /dev/{{ vg_name }}/{{ lv_name }}
+
+- name: Get size of lvmraid device
+  set_fact:
+    raid_size: "{{ (ansible_lvm.lvs[lv_name].size_g ~ ' GB')|human_to_bytes }}"

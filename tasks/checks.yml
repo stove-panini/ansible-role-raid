@@ -1,0 +1,29 @@
+---
+- name: Ensure all block devices are present
+  assert:
+    that:
+      - item in ansible_devices
+    fail_msg: Can't find block device /dev/{{ item }}
+    quiet: yes
+  loop: "{{ raid_block_devs }}"
+
+- name: Get mdraid array info
+  command:
+    cmd: mdadm --detail --scan
+  register: mdraid_check
+  changed_when: no
+
+- name: VDO checks
+  block:
+    - name: Ensure vdo_purpose is correctly set
+      assert:
+        that:
+          - "'virtualization' in vdo_purpose or 'object_storage' in vdo_purpose"
+        success_msg: "Using a {{ vdo_multiplier }}x multiplier for VDO's logical volume size."
+        fail_msg: "vdo_purpose must be one of 'virtualization' or 'object_storage'"
+
+    - name: Get existing VDO devices
+      command: vdostats
+      changed_when: no
+      register: vdo_check
+  when: create_vdo|bool

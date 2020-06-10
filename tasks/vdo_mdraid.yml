@@ -1,0 +1,18 @@
+---
+- name: Add VDO layer to {{ raid_name }}
+  vdo:
+    state: present
+    name: "{{ vdo_name }}"
+    device: "{{ raid_device }}"
+    logicalsize: "{{ vdo_logicalsize }}B"
+    slabsize: "{{ vdo_slabsize }}G"
+    indexmode: "{{ vdo_indexmode|default('dense') }}"
+    indexmem: "{{ vdo_indexmem }}"
+    compression: enabled
+    deduplication: enabled
+  when: vdo_name not in vdo_check.stdout
+
+# Overwrite raid_device var from mdraid/lvmraid
+- name: Set raid_device
+  set_fact:
+    raid_device: /dev/mapper/{{ vdo_name }}

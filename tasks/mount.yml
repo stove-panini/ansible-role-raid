@@ -1,0 +1,21 @@
+---
+- name: Create mountpoint at {{ mountpoint }}
+  file:
+    state: directory
+    path: "{{ mountpoint }}"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Set VDO mount_opts
+  set_fact:
+    mount_opts: "defaults,_netdev,x-systemd.device-timeout=0,x-systemd.requires=vdo.service"
+  when: vdo|bool
+
+- name: Mount {{ raid_device }} at {{ mountpoint }}
+  mount:
+    state: mounted
+    src: "{{ raid_device }}"
+    path: "{{ mountpoint }}"
+    fstype: xfs
+    opts: "{{ mount_opts|default('defaults') }}"

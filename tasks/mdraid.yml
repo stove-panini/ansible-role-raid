@@ -1,0 +1,31 @@
+---
+- name: Create mdadm array
+  command: >
+    mdadm
+      --create
+      --name={{ raid_name }}
+      --level={{ mdraid_level }}
+      --chunk={{ chunksize }}
+      --raid-devices={{ raid_block_devs|count }}
+      /dev/md/{{ raid_name }}
+      /dev/disk/by-partlabel/{{ partition_names|join(' /dev/disk/by-partlabel/') }}
+  when: ('/dev/md/' ~ raid_name) not in mdraid_check.stdout
+
+- name: Refresh device facts
+  setup:
+    filter: ansible_devices
+
+- name: Set raid_device
+  set_fact:
+    raid_device: /dev/md/{{ raid_name }}
+
+- name: Get real path of the mdraid device
+  stat:
+    path: "{{ raid_device }}"
+  # We want the "stat.lnk_source" key
+  register: real_path
+
+- name: Get size of mdraid device
+  set_fact:
+    # Trimming "/dev/" from the mdraid device & converting the size to a consistent unit
+    raid_size: "{{ ansible_devices[real_path.stat.lnk_source[5:]].size|human_to_bytes }}"
