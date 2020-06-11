@@ -12,7 +12,7 @@
     deduplication: enabled
   when: vdo_name not in vdo_check.stdout
 
-# Overwrite raid_device var from mdraid/lvmraid
+# Overwrite raid_device var
 - name: Set raid_device
   set_fact:
     raid_device: /dev/mapper/{{ vdo_name }}

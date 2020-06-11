@@ -11,3 +11,8 @@
                   allocation/vdo_slab_size_mb={{ vdo_slab_size_mb }}'
         {{ vg_name }}/{{ lv_name }}
   when: vdo_name not in ansible_lvm.lvs
+
+# Overwrite raid_device var
+- name: Set raid_device
+  set_fact:
+    raid_device: /dev/{{ vg_name }}/{{ vdo_name }}
