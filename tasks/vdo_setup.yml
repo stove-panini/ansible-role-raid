@@ -79,7 +79,7 @@
   debug:
     msg:
       - Raid size    = {{ raid_size|int|human_readable(unit='G') }}
-      - Logical size = {{ vdo_logicalsize|int|human_readable(unit='M') }}
+      - Logical size = {{ vdo_logicalsize|int|human_readable(unit='G') }}
       - Slab size    = {{ vdo_slabsize }} GB
       - Index mode   = {{ vdo_indexmode|default('dense') }}
       - Index mem    = {{ vdo_indexmem }} GB
