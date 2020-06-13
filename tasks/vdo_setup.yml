@@ -11,7 +11,7 @@
   set_fact:
     vdo_logicalsize: "{{ raid_size|int * vdo_multiplier|int }}"
     # LVM gets picky when value specified in bytes. Let's round to the nearest MB instead.
-    vdo_logicalsize_mb: "{{ ((raid_size|int * vdo_multiplier|int) / 1048576)|round(0)|int }}"
+    vdo_logicalsize_mb: "{{ ((raid_size|int / 1048576) * vdo_multiplier|int)|round(0)|int }}"
   when: vdo_custom_size is not defined
 
 - name: Set custom logical size of VDO layer
@@ -79,7 +79,7 @@
   debug:
     msg:
       - Raid size    = {{ raid_size|int|human_readable(unit='G') }}
-      - Logical size = {{ vdo_logicalsize|int|human_readable(unit='G') }}
+      - Logical size = {{ vdo_logicalsize|int|human_readable(unit='G') }} ({{ vdo_logicalsize_mb }} MB)
       - Slab size    = {{ vdo_slabsize }} GB
       - Index mode   = {{ vdo_indexmode|default('dense') }}
       - Index mem    = {{ vdo_indexmem }} GB
