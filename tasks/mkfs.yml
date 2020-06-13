@@ -11,7 +11,7 @@
     mkfs_opts: -K
   when: create_vdo|bool
 
-- name: Format {{ lv_name }} as XFS
+- name: Format {{ raid_device }} as XFS
   filesystem:
     fstype: xfs
     dev: "{{ raid_device }}"
