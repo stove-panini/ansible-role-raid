@@ -10,7 +10,7 @@
 - name: Set VDO mount_opts
   set_fact:
     mount_opts: "defaults,_netdev,x-systemd.device-timeout=0,x-systemd.requires=vdo.service"
-  when: vdo|bool
+  when: create_vdo|bool
 
 - name: Mount {{ raid_device }} at {{ mountpoint }}
   mount:
