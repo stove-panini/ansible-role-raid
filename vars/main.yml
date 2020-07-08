@@ -21,7 +21,7 @@ raid_config:
   raid10:
     chunksize: 512
     mirrors: "1"
-    stripes: "{{ (raid_block_devs|length / 2)|int }}"
+    stripes: "{{ '2' if raid_block_devs|length == 3 else (raid_block_devs|length / 2)|int }}"
 
 # shortcuts
 numstripes: "{{ raid_config[raid_level].stripes }}"
