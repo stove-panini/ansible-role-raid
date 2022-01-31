@@ -7,7 +7,7 @@
 - name: Partition block devices
   parted:
     state: present
-    device: "{{ item|regex_replace('^', '/dev/') }}"
+    device: /dev/{{ item }}
     label: gpt
     number: 1
     name: raid_member{{ idx }}
