@@ -4,8 +4,8 @@
     mdadm
       --create
       --name={{ raid_name }}
-      --level={{ mdraid_level }}
-      --chunk={{ chunksize }}
+      --level={{ raid_mdraid_level }}
+      --chunk={{ raid_chunksize }}
       --raid-devices={{ raid_block_devs|count }}
       /dev/md/{{ raid_name }}
       /dev/disk/by-partlabel/{{ partition_names|join(' /dev/disk/by-partlabel/') }}

@@ -1,8 +1,8 @@
 ---
-- name: Create mountpoint at {{ mountpoint }}
+- name: Create raid_mountpoint at {{ raid_mountpoint }}
   file:
     state: directory
-    path: "{{ mountpoint }}"
+    path: "{{ raid_mountpoint }}"
     owner: root
     group: root
     mode: 0755
@@ -10,12 +10,12 @@
 - name: Set VDO mount_opts
   set_fact:
     mount_opts: "defaults,_netdev,x-systemd.device-timeout=0,x-systemd.requires=vdo.service"
-  when: create_vdo|bool
+  when: raid_create_vdo|bool
 
-- name: Mount {{ raid_device }} at {{ mountpoint }}
+- name: Mount {{ raid_device }} at {{ raid_mountpoint }}
   mount:
     state: mounted
     src: "{{ raid_device }}"
-    path: "{{ mountpoint }}"
+    path: "{{ raid_mountpoint }}"
     fstype: xfs
     opts: "{{ mount_opts|default('defaults') }}"

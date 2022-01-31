@@ -17,10 +17,10 @@
 
     - include_tasks: vdo_mdraid.yml
       when: raid_backend == 'mdraid'
-  when: create_vdo|bool
+  when: raid_create_vdo|bool
 
 - include_tasks: mkfs.yml
-  when: create_fs|bool
+  when: raid_create_fs|bool
 
 - include_tasks: mount.yml
-  when: add_to_fstab|bool
+  when: raid_add_to_fstab|bool

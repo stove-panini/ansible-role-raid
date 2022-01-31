@@ -2,7 +2,7 @@
 - name: Add VDO layer to {{ raid_name }}
   vdo:
     state: present
-    name: "{{ vdo_name }}"
+    name: "{{ raid_vdo_name }}"
     device: "{{ raid_device }}"
     logicalsize: "{{ vdo_logicalsize }}B"
     slabsize: "{{ vdo_slabsize }}G"
@@ -10,9 +10,9 @@
     indexmem: "{{ vdo_indexmem }}"
     compression: enabled
     deduplication: enabled
-  when: vdo_name not in vdo_check.stdout
+  when: raid_vdo_name not in vdo_check.stdout
 
 # Overwrite raid_device var
 - name: Set raid_device
   set_fact:
-    raid_device: /dev/mapper/{{ vdo_name }}
+    raid_device: /dev/mapper/{{ raid_vdo_name }}

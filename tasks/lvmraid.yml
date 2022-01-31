@@ -1,12 +1,12 @@
 ---
 - name: Define options for mirrored RAID
   set_fact:
-    lv_opts: --mirrors {{ nummirrors }}
+    lv_opts: --mirrors {{ raid_nummirrors }}
   when: raid_level == 'raid1'
 
 - name: Define options for striped RAID
   set_fact:
-    lv_opts: --stripes {{ numstripes }}
+    lv_opts: --stripes {{ raid_numstripes }}
   when: >
     raid_level == 'raid0' or
     raid_level == 'raid5' or
@@ -14,28 +14,28 @@
 
 - name: Define options for striped + mirrored RAID
   set_fact:
-    lv_opts: --stripes {{ numstripes }} --mirrors {{ nummirrors }}
+    lv_opts: --stripes {{ raid_numstripes }} --mirrors {{ raid_nummirrors }}
   when: raid_level == 'raid10'
 
-- name: Set new lv_name if using VDO
+- name: Set new raid_lv_name if using VDO
   set_fact:
-    lv_name: "{{ raid_name ~ '_vpool' }}"
-  when: create_vdo|bool
+    raid_lv_name: "{{ raid_name ~ '_vpool' }}"
+  when: raid_create_vdo|bool
 
 # NOTE: this also creates the PVs
-- name: Create volume group {{ vg_name }}
+- name: Create volume group {{ raid_vg_name }}
   lvg:
     state: present
-    vg: "{{ vg_name }}"
-    vg_options: --dataalignment {{ vg_dataalignment }}
+    vg: "{{ raid_vg_name }}"
+    vg_options: --dataalignment {{ raid_vg_dataalignment }}
     pvs: "/dev/disk/by-partlabel/{{ partition_names|join(',/dev/disk/by-partlabel/') }}"
 
-- name: Create RAID logical volume {{ lv_name }}
+- name: Create RAID logical volume {{ raid_lv_name }}
   lvol:
     state: present
     active: yes
-    vg: "{{ vg_name }}"
-    lv: "{{ lv_name }}"
+    vg: "{{ raid_vg_name }}"
+    lv: "{{ raid_lv_name }}"
     size: 100%FREE
     opts: --type {{ raid_level }} {{ lv_opts }}
     # 100%FREE makes lvol non-idempotent, so we must specify shrink=no
@@ -47,8 +47,8 @@
 
 - name: Set raid_device
   set_fact:
-    raid_device: /dev/{{ vg_name }}/{{ lv_name }}
+    raid_device: /dev/{{ raid_vg_name }}/{{ raid_lv_name }}
 
 - name: Get size of lvmraid device
   set_fact:
-    raid_size: "{{ (ansible_lvm.lvs[lv_name].size_g ~ ' GB')|human_to_bytes }}"
+    raid_size: "{{ (ansible_lvm.lvs[raid_lv_name].size_g ~ ' GB')|human_to_bytes }}"

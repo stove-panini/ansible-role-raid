@@ -15,15 +15,15 @@
 
 - name: VDO checks
   block:
-    - name: Ensure vdo_purpose is correctly set
+    - name: Ensure raid_vdo_purpose is correctly set
       assert:
         that:
-          - "'virtualization' in vdo_purpose or 'object_storage' in vdo_purpose"
-        success_msg: "Using a {{ vdo_multiplier }}x multiplier for VDO's logical volume size."
-        fail_msg: "vdo_purpose must be one of 'virtualization' or 'object_storage'"
+          - "'virtualization' in raid_vdo_purpose or 'object_storage' in raid_vdo_purpose"
+        success_msg: "Using a {{ raid_vdo_multiplier }}x multiplier for VDO's logical volume size."
+        fail_msg: "raid_vdo_purpose must be one of 'virtualization' or 'object_storage'"
 
     - name: Get existing VDO devices
       command: vdostats
       changed_when: no
       register: vdo_check
-  when: create_vdo|bool
+  when: raid_create_vdo|bool

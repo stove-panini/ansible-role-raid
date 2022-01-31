@@ -11,19 +11,19 @@ raid_backend: mdraid
 #raid_name: my_cool_raid
 
 # Create a Virtual Data Optimizer layer?
-create_vdo: no
+raid_create_vdo: no
 
 # Allowed values:
 # virtualization = logical size is 10x that of physical storage
 # block_storage  = logical size is  3x that of physical storage
-vdo_purpose: virtualization
+raid_vdo_purpose: virtualization
 
 # A custom value can be specified for the logical size instead
-#vdo_custom_size: 6 TB
+#raid_vdo_custom_size: 6 TB
 
 # Create an XFS filesystem?
-create_fs: yes
+raid_create_fs: yes
 
 # Add to fstab? If so, where to mount?
-add_to_fstab: yes
-mountpoint: /mnt/{{ raid_name }}
+raid_add_to_fstab: yes
+raid_mountpoint: /mnt/{{ raid_name }}
