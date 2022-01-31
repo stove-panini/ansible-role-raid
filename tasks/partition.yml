@@ -17,10 +17,11 @@
     index_var: idx
   register: raid_partitions
 
-# Hideous, but apparently correct
+# Extracts partition names (raid_member{1,2,3...}) from the complex structure
+# of the raid_partitions variable into a simple list
 - name: Build a list of our partitions
   set_fact:
-    partition_names: "{{ partition_names }} + [ '{{ item.invocation.module_args.name }}' ]"
+    raid_partition_names: "{{ raid_partition_names }} + [ '{{ item.invocation.module_args.name }}' ]"
   vars:
-    partition_names: []
+    raid_partition_names: []
   loop: "{{ raid_partitions.results }}"

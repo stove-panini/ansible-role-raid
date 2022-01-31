@@ -28,7 +28,7 @@
     state: present
     vg: "{{ raid_vg_name }}"
     vg_options: --dataalignment {{ raid_vg_dataalignment }}
-    pvs: "/dev/disk/by-partlabel/{{ partition_names|join(',/dev/disk/by-partlabel/') }}"
+    pvs: "/dev/disk/by-partlabel/{{ raid_partition_names|join(',/dev/disk/by-partlabel/') }}"
 
 - name: Create RAID logical volume {{ raid_lv_name }}
   lvol:
