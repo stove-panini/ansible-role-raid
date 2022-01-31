@@ -27,7 +27,6 @@ raid_config:
 raid_numstripes: "{{ raid_config[raid_level].stripes }}"
 raid_nummirrors: "{{ raid_config[raid_level].mirrors }}"
 raid_chunksize: "{{ raid_config[raid_level].raid_chunksize }}"
-raid_mdraid_level: "{{ raid_level[4:] }}"
 
 # https://access.redhat.com/labs/lvmraidcalculator/
 # alignment = chunk (aka stripe) size * num datadisks

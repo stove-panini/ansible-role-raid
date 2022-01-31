@@ -4,7 +4,7 @@
     mdadm
       --create
       --name={{ raid_name }}
-      --level={{ raid_mdraid_level }}
+      --level={{ raid_level[4:] }}
       --chunk={{ raid_chunksize }}
       --raid-devices={{ raid_block_devs|count }}
       /dev/md/{{ raid_name }}
