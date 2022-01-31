@@ -29,7 +29,7 @@ Set the following as vars for your role. Options in bold are required. Choices i
 | raid\_vdo\_custom\_size | *No default* | Instead of using the multipliers predefined in vdo\_purpose, you may specify a custom size. (e.g. `6 TB`, `40 GB`, etc.) |
 | raid\_create\_fs | **yes**, no | Formats the resulting device with the XFS file system. Chunk size and stripe width are automatically tuned to the backing storage and RAID-type you choose. However, if you use VDO, it will simply use the defaults. |
 | raid\_add\_to\_fstab | **yes**, no | Mounts the resulting device and adds it to your `/etc/fstab` |
-| raid\_mountpoint | `/mnt/<raid_name>` | Where the resulting device witll be mounted
+| raid\_mountpoint | **`/mnt/<raid_name>`** | Where the resulting device will be mounted
 
 Sample Playbook
 ---------------
