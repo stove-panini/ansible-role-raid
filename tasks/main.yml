@@ -1,26 +1,8 @@
 ---
 - import_tasks: checks.yml
 
-- import_tasks: partition.yml
+- include_tasks: remove.yml
+  when: raid_state == 'absent'
 
-- include_tasks: lvmraid.yml
-  when: raid_backend == 'lvmraid'
-
-- include_tasks: mdraid.yml
-  when: raid_backend == 'mdraid'
-
-- block:
-    - include_tasks: vdo_setup.yml
-
-    - include_tasks: vdo_lvmraid.yml
-      when: raid_backend == 'lvmraid'
-
-    - include_tasks: vdo_mdraid.yml
-      when: raid_backend == 'mdraid'
-  when: raid_create_vdo|bool
-
-- include_tasks: mkfs.yml
-  when: raid_create_fs|bool
-
-- include_tasks: mount.yml
-  when: raid_add_to_fstab|bool
+- include_tasks: create.yml
+  when: raid_state == 'present'

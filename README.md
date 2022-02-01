@@ -22,14 +22,15 @@ Set the following as vars for your role. Options in bold are required. Choices i
 | ------ | ------- | -------- |
 | **raid_level** | raid0, raid1, raid5, raid6, raid10 | |
 | **raid_block_devs** | *No default* | A list of block devices (e.g. `[ sdb, sdc, sdd, sde ]` ) |
-| **raid_name** | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc.
+| **raid_name** | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc. |
+| raid\_state | **present**, absent | Whether to create or destroy the RAID array |
 | raid\_backend | **mdraid**, lvmraid | |
 | raid\_create\_vdo | yes, **no** | If yes, this creates a VDO layer on your RAID. |
 | raid\_vdo\_purpose | **virtualization**, object\_storage | Choosing "virtualization" creates a logical layer 10x the size of the backing device, while "object\_storage" creates a logical layer 3x the size of the backing device. |
 | raid\_vdo\_custom\_size | *No default* | Instead of using the multipliers predefined in vdo\_purpose, you may specify a custom size. (e.g. `6 TB`, `40 GB`, etc.) |
 | raid\_create\_fs | **yes**, no | Formats the resulting device with the XFS file system. Chunk size and stripe width are automatically tuned to the backing storage and RAID-type you choose. However, if you use VDO, it will simply use the defaults. |
 | raid\_add\_to\_fstab | **yes**, no | Mounts the resulting device and adds it to your `/etc/fstab` |
-| raid\_mountpoint | **`/mnt/<raid_name>`** | Where the resulting device will be mounted
+| raid\_mountpoint | **`/mnt/<raid_name>`** | Where the resulting device will be mounted |
 
 Sample Playbook
 ---------------

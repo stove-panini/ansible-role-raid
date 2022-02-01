@@ -1,3 +1,6 @@
+# Allowed values: present, absent
+raid_state: present
+
 # Allowed values: mdraid, lvmraid
 raid_backend: mdraid
 

@@ -1,0 +1,24 @@
+---
+- name: Unmount RAID array, remove from fstab, remove mountpoint
+  mount:
+    state: absent
+    path: "{{ raid_mountpoint }}"
+
+- name: Stop mdraid array
+  command: mdadm --stop /dev/md/{{ raid_name }}
+  when:
+    - raid_backend == 'mdraid'
+    - ('/dev/md/' ~ raid_name) in mdraid_check.stdout
+
+- name: Remove LVM VG
+  lvg:
+    state: absent
+    vg: "{{ raid_vg_name }}"
+    force: true
+  when:
+    - raid_backend == 'lvmraid'
+    - raid_vg_name in ansible_lvm.vgs
+
+- name: Run wipefs on each RAID block device
+  command: wipefs -a /dev/{{ item }}
+  loop: "{{ raid_block_devs }}"
