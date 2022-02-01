@@ -10,7 +10,7 @@
     device: /dev/{{ item }}
     label: gpt
     number: 1
-    name: {{ raid_name }}_member{{ idx }}
+    name: "{{ raid_name }}_member{{ idx }}"
     flags: [ "{{ parted_flag|default('raid') }}" ]
   loop: "{{ raid_block_devs }}"
   loop_control:
