@@ -22,7 +22,7 @@ Set the following as vars for your role. Options in bold are required. Choices i
 | ------ | ------- | -------- |
 | **raid_level** | raid0, raid1, raid5, raid6, raid10 | |
 | **raid_block_devs** | *No default* | A list of block devices (e.g. `[ sdb, sdc, sdd, sde ]` ) |
-| **raid_name** | *No default* | For mdraid, this will become `/dev/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc. |
+| **raid_name** | *No default* | For mdraid, this will become `/dev/md/<raid_name>` while lvmraid will use `<raid_name>_lv`, `<raid_name>_vg`, etc. |
 | raid\_state | **present**, absent | Whether to create or destroy the RAID array |
 | raid\_backend | **mdraid**, lvmraid | |
 | raid\_create\_vdo | yes, **no** | If yes, this creates a VDO layer on your RAID. |
