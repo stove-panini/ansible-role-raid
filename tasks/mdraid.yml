@@ -1,5 +1,5 @@
 ---
-- name: Create mdadm array
+- name: Create mdraid array
   command: >
     mdadm
       --create
