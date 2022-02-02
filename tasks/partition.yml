@@ -17,7 +17,7 @@
     index_var: idx
   register: raid_partitions
 
-# Extracts partition names (raid_member{1,2,3...}) from the complex structure
+# Extracts partition names (raid_member{0,1,2...}) from the complex structure
 # of the raid_partitions variable into a simple list
 - name: Build a list of our partitions
   set_fact:
