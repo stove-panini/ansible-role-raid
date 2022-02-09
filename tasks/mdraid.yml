@@ -25,7 +25,14 @@
   # We want the "stat.lnk_source" key
   register: real_path
 
-- name: Get size of mdraid device
+- name: Create var for mdraid real_path
   set_fact:
-    # Trimming "/dev/" from the mdraid device & converting the size to a consistent unit
-    raid_size: "{{ ansible_devices[real_path.stat.lnk_source[5:]].size|human_to_bytes }}"
+    # Trimming "/dev/" from the mdraid device
+    mdraid_device: "{{ real_path.stat.lnk_source[5:] }}"
+
+- name: Create vars for mdraid device
+  set_fact:
+    # Trimming "md-uuid-"
+    mdraid_md_uuid: "{{ ansible_devices[mdraid_device].links[1][8:] }}"
+    mdraid_uuid: "{{ ansible_devices[mdraid_device].links.uuids[0] }}"
+    raid_size: "{{ ansible_devices[mdraid_device].size|human_to_bytes }}"
