@@ -11,7 +11,7 @@
 # For example, /dev/md/foo may sometimes appear as /dev/md/foo_0
 - name: Set mdraid mount_opts
   set_fact:
-    mount_opts: "defaults,x-parent={{ mdraid_md_uuid }}"
+    mount_opts: "defaults,nofail,x-parent={{ mdraid_md_uuid }}"
     mount_src: "UUID={{ mdraid_uuid }}"
   when:
     - raid_backend == 'mdraid'
@@ -29,4 +29,4 @@
     src: "{{ mount_src | default(raid_device) }}"
     path: "{{ raid_mountpoint }}"
     fstype: xfs
-    opts: "{{ mount_opts|default('defaults') }}"
+    opts: "{{ mount_opts|default('defaults,nofail') }}"
