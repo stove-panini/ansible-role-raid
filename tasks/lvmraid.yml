@@ -33,7 +33,7 @@
 - name: Create RAID logical volume {{ raid_lv_name }}
   lvol:
     state: present
-    active: yes
+    active: true
     vg: "{{ raid_vg_name }}"
     lv: "{{ raid_lv_name }}"
     size: 100%FREE

@@ -10,10 +10,10 @@
       /dev/md/{{ raid_name }}
       /dev/disk/by-partlabel/{{ raid_partition_names|join(' /dev/disk/by-partlabel/') }}
   when: ('/dev/md/' ~ raid_name) not in mdraid_check.stdout
+  notify: refresh_device_facts
 
-- name: Refresh device facts
-  setup:
-    filter: ansible_devices
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Set raid_device
   set_fact:
@@ -30,9 +30,8 @@
     # Trimming "/dev/" from the mdraid device
     mdraid_device: "{{ real_path.stat.lnk_source[5:] }}"
 
-- name: Create vars for mdraid device
+- name: Get MD-UUID and size for mdraid device
   set_fact:
     # Trimming "md-uuid-"
-    mdraid_md_uuid: "{{ ansible_devices[mdraid_device].links[1][8:] }}"
-    mdraid_uuid: "{{ ansible_devices[mdraid_device].links.uuids[0] }}"
+    mdraid_md_uuid: "{{ ansible_devices[mdraid_device].links.ids[1][8:] }}"
     raid_size: "{{ ansible_devices[mdraid_device].size|human_to_bytes }}"

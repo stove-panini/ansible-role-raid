@@ -16,3 +16,12 @@
     fstype: xfs
     dev: "{{ raid_device }}"
     opts: "{{ mkfs_opts }}"
+  notify: refresh_device_facts
+
+- name: Flush handlers
+  meta: flush_handlers
+
+- name: Get UUID for mdraid device
+  set_fact:
+    mdraid_uuid: "{{ ansible_devices[mdraid_device].links.uuids[0] }}"
+  when: raid_backend == 'mdraid'

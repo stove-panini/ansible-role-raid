@@ -4,14 +4,14 @@
     that:
       - item in ansible_devices
     fail_msg: Can't find block device /dev/{{ item }}
-    quiet: yes
+    quiet: true
   loop: "{{ raid_block_devs }}"
 
-- name: Get mdraid array info
+- name: Get mdraid device info
   command:
     cmd: mdadm --detail --scan
   register: mdraid_check
-  changed_when: no
+  changed_when: false
 
 - name: VDO checks
   block:
@@ -24,6 +24,6 @@
 
     - name: Get existing VDO devices
       command: vdostats
-      changed_when: no
+      changed_when: false
       register: vdo_check
   when: raid_create_vdo|bool

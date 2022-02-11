@@ -3,7 +3,7 @@
   systemd:
     name: vdo
     state: started
-    enabled: yes
+    enabled: true
 
 # NOTE: the second fact in each list is for lvmvdo
 

@@ -1,0 +1,4 @@
+---
+- name: refresh_device_facts
+  setup:
+    filter: ansible_devices
