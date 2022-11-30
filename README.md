@@ -2,6 +2,10 @@ ansible-raid
 ============
 Creates a RAID (using mdraid or lvmraid) and optional VDO layer.
 
+Requirements
+------------
+This role makes use of modules found in the `ansible.posix` and `community.general` collections.
+
 VDO
 ---
 Optionally adds a VDO layer, tuned according to the resulting RAID device. In the case of an lvmraid, [lvmvdo](https://man7.org/linux/man-pages/man7/lvmvdo.7.html) is used.
@@ -38,11 +42,10 @@ Sample Playbook
 - hosts: raid-test.example.com
   roles:
     - role: raid
-      vars:
-        raid_level: raid10
-        raid_name: my_cool_raid
-        raid_block_devs: [ sdb, sdc, sdd, sde ]
-        raid_backend: lvmraid
-        raid_use_vdo: yes
-        raid_add_to_fstab: no
+      raid_level: raid10
+      raid_name: my_cool_raid
+      raid_block_devs: [ sdb, sdc, sdd, sde ]
+      raid_backend: lvmraid
+      raid_use_vdo: yes
+      raid_add_to_fstab: no
 ```
