@@ -1,6 +1,6 @@
 ---
-- name: Create raid_mountpoint at {{ raid_mountpoint }}
-  file:
+- name: Create mount directory
+  ansible.builtin.file:
     state: directory
     path: "{{ raid_mountpoint }}"
     owner: root
@@ -9,24 +9,24 @@
 
 # Using UUID because mdraid device path can change, even when using a name!
 # For example, /dev/md/foo may sometimes appear as /dev/md/foo_0
-- name: Set mdraid mount_opts
-  set_fact:
+- name: Set mdraid mount options
+  ansible.builtin.set_fact:
     mount_opts: "defaults,nofail,x-parent={{ mdraid_md_uuid }}"
     mount_src: "UUID={{ mdraid_uuid }}"
   when:
     - raid_backend == 'mdraid'
-    - not raid_create_vdo|bool
+    - not raid_create_vdo | bool
 
-- name: Set VDO mount_opts
-  set_fact:
+- name: Set VDO mount options
+  ansible.builtin.set_fact:
     # ref: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/deduplicating_and_compressing_storage/deploying-vdo_deduplicating-and-compressing-storage#mounting-a-vdo-volume_deploying-vdo
     mount_opts: "defaults,_netdev,x-systemd.device-timeout=0,x-systemd.requires=vdo.service"
-  when: raid_create_vdo|bool
+  when: raid_create_vdo | bool
 
-- name: Mount {{ raid_device }} at {{ raid_mountpoint }}
-  mount:
+- name: Mount RAID device
+  ansible.posix.mount:
     state: mounted
     src: "{{ mount_src | default(raid_device) }}"
     path: "{{ raid_mountpoint }}"
     fstype: xfs
-    opts: "{{ mount_opts|default('defaults,nofail') }}"
+    opts: "{{ mount_opts | default('defaults,nofail') }}"

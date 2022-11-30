@@ -3,25 +3,24 @@ raid_vg_name: "{{ raid_name ~ '_vg' }}"
 raid_lv_name: "{{ raid_name ~ '_lv' }}"
 raid_vdo_name: "{{ raid_name ~ '_vdo' }}"
 
-# NOTE: Accessing a nested var from another nested var makes ansible mad
 raid_config:
   raid0:
     # https://louwrentius.com/linux-raid-level-and-chunk-size-the-benchmarks.html
     raid_chunksize: 512
-    stripes: "{{ (raid_block_devs|length / 2)|int }}"
+    stripes: "{{ (raid_block_devs | length / 2) | int }}"
   raid1:
     raid_chunksize: 512
-    mirrors: "{{ (raid_block_devs|length - 1)|int }}"
+    mirrors: "{{ (raid_block_devs | length - 1) | int }}"
   raid5:
     raid_chunksize: 64
-    stripes: "{{ (raid_block_devs|length - 1)|int }}"
+    stripes: "{{ (raid_block_devs | length - 1) | int }}"
   raid6:
     raid_chunksize: 64
-    stripes: "{{ (raid_block_devs|length - 2)|int }}"
+    stripes: "{{ (raid_block_devs | length - 2) | int }}"
   raid10:
     raid_chunksize: 512
     mirrors: "1"
-    stripes: "{{ '2' if raid_block_devs|length == 3 else (raid_block_devs|length / 2)|int }}"
+    stripes: "{{ '2' if raid_block_devs | length == 3 else (raid_block_devs | length / 2) | int }}"
 
 # shortcuts
 raid_numstripes: "{{ raid_config[raid_level].stripes }}"
@@ -30,7 +29,7 @@ raid_chunksize: "{{ raid_config[raid_level].raid_chunksize }}"
 
 # https://access.redhat.com/labs/lvmraidcalculator/
 # alignment = chunk (aka stripe) size * num datadisks
-raid_vg_dataalignment: "{{ raid_chunksize|int * raid_numstripes|int }}k"
+raid_vg_dataalignment: "{{ raid_chunksize | int * raid_numstripes | int }}k"
 
 # Multiplier for VDO logical size based on intended usage
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/deduplicating_and_compressing_storage/deploying-vdo_deduplicating-and-compressing-storage#proc_creating-a-vdo-volume-deploying-vdo
@@ -41,4 +40,4 @@ raid_vdo_config:
     multiplier: 3
 
 raid_vdo_multiplier: "{{ raid_vdo_config[raid_vdo_purpose].multiplier }}"
-raid_vdo_custom_size_bytes: "{{ raid_vdo_custom_size|human_to_bytes }}"
+raid_vdo_custom_size_bytes: "{{ raid_vdo_custom_size | human_to_bytes }}"

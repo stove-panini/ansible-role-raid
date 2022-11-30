@@ -1,27 +1,28 @@
 ---
 - name: Set standard mkfs opts
-  set_fact:
+  ansible.builtin.set_fact:
     # su = lvm stripe size, sw = # of data disks
     mkfs_opts: "-d su={{ raid_chunksize }}k,sw={{ raid_numstripes }}"
-  when: not raid_create_vdo|bool
+  when: not raid_create_vdo | bool
 
 - name: Set VDO mkfs opts
-  set_fact:
+  ansible.builtin.set_fact:
     # Do not attempt to discard blocks at mkfs time
     mkfs_opts: -K
-  when: raid_create_vdo|bool
+  when: raid_create_vdo | bool
 
 - name: Format {{ raid_device }} as XFS
-  filesystem:
+  community.general.filesystem:
+    state: present
     fstype: xfs
     dev: "{{ raid_device }}"
     opts: "{{ mkfs_opts }}"
-  notify: refresh_device_facts
+  notify: Refresh facts
 
 - name: Flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Get UUID for mdraid device
-  set_fact:
+  ansible.builtin.set_fact:
     mdraid_uuid: "{{ ansible_devices[mdraid_device].links.uuids[0] }}"
   when: raid_backend == 'mdraid'

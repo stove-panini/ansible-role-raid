@@ -7,7 +7,9 @@
 - include_tasks: mdraid.yml
   when: raid_backend == 'mdraid'
 
-- block:
+- name: Create VDO layer
+  when: raid_create_vdo | bool
+  block:
     - include_tasks: vdo_setup.yml
 
     - include_tasks: vdo_lvmraid.yml
@@ -15,10 +17,9 @@
 
     - include_tasks: vdo_mdraid.yml
       when: raid_backend == 'mdraid'
-  when: raid_create_vdo|bool
 
 - include_tasks: mkfs.yml
-  when: raid_create_fs|bool
+  when: raid_create_fs | bool
 
 - include_tasks: mount.yml
-  when: raid_add_to_fstab|bool
+  when: raid_add_to_fstab | bool

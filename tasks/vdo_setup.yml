@@ -1,6 +1,6 @@
 ---
 - name: Ensure VDO service is started & enabled
-  systemd:
+  ansible.builtin.service:
     name: vdo
     state: started
     enabled: true
@@ -8,78 +8,78 @@
 # NOTE: the second fact in each list is for lvmvdo
 
 - name: Set logical size of VDO layer
-  set_fact:
-    vdo_logicalsize: "{{ raid_size|int * raid_vdo_multiplier|int }}"
+  ansible.builtin.set_fact:
+    vdo_logicalsize: "{{ raid_size | int * raid_vdo_multiplier | int }}"
     # LVM gets picky when value specified in bytes. Let's round to the nearest MB instead.
-    vdo_logicalsize_mb: "{{ ((raid_size|int / 1048576) * raid_vdo_multiplier|int)|round(0)|int }}"
+    vdo_logicalsize_mb: "{{ ((raid_size | int / 1048576) * raid_vdo_multiplier | int) | round(0) | int }}"
   when: raid_vdo_custom_size is not defined
 
 - name: Set custom logical size of VDO layer
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_logicalsize: "{{ raid_vdo_custom_size_bytes }}"
-    vdo_logicalsize_mb: "{{ (raid_vdo_custom_size_bytes|int / 1048576)|round(0)|int }}"
+    vdo_logicalsize_mb: "{{ (raid_vdo_custom_size_bytes | int / 1048576) | round(0) | int }}"
   when: raid_vdo_custom_size is defined
 
 - name: Set VDO slabsize to 1 GB when RAID is less than 100 GB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_slabsize: 1
     vdo_slab_size_mb: 1024
-  when: raid_size|int < 107374182400
+  when: raid_size | int < 107374182400
 
 - name: Set VDO slabsize to 2 GB when RAID is 100 GB - 2 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_slabsize: 2
     vdo_slab_size_mb: 2048
   when:
-    - raid_size|int >= 107374182400
-    - raid_size|int <= 2199023255552
+    - raid_size | int >= 107374182400
+    - raid_size | int <= 2199023255552
 
 - name: Set VDO slabsize to 32 GB when RAID is greater than 2 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_slabsize: 32
     vdo_slab_size_mb: 32768
-  when: raid_size|int > 2199023255552
+  when: raid_size | int > 2199023255552
 
 - name: Set VDO index mode to sparse when RAID is greater than 1 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_indexmode: sparse
     vdo_use_sparse_index: 1
-  when: raid_size|int > 1099511627776
+  when: raid_size | int > 1099511627776
 
 - name: Set VDO index mem to 256 MB when RAID is 10 TB or less
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_indexmem: '0.25'
     vdo_index_memory_size_mb: 256
-  when: raid_size|int <= 10995116277760
+  when: raid_size | int <= 10995116277760
 
 - name: Set VDO index mem to 2 GB when RAID is 10 - 50 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_indexmem: 2
     vdo_index_memory_size_mb: 2048
   when:
-    - raid_size|int > 10995116277760
-    - raid_size|int <= 54975581388800
+    - raid_size | int > 10995116277760
+    - raid_size | int <= 54975581388800
 
 - name: Set VDO index mem to 3 GB when RAID is 50 - 100 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_indexmem: 3
     vdo_index_memory_size_mb: 3072
   when:
-    - raid_size|int > 54975581388800
-    - raid_size|int <= 109951162777600
+    - raid_size | int > 54975581388800
+    - raid_size | int <= 109951162777600
 
 - name: Set VDO index mem to 12 GB when RAID greater than 100 TB
-  set_fact:
+  ansible.builtin.set_fact:
     vdo_indexmem: 12
     vdo_index_memory_size_mb: 12288
   when:
-    - raid_size|int > 109951162777600
+    - raid_size | int > 109951162777600
 
 - name: Report our settings
-  debug:
+  ansible.builtin.debug:
     msg:
-      - Raid size    = {{ raid_size|int|human_readable(unit='G') }}
-      - Logical size = {{ vdo_logicalsize|int|human_readable(unit='G') }} ({{ vdo_logicalsize_mb }} MB)
+      - Raid size    = {{ raid_size | int | human_readable(unit='G') }}
+      - Logical size = {{ vdo_logicalsize | int | human_readable(unit='G') }} ({{ vdo_logicalsize_mb }} MB)
       - Slab size    = {{ vdo_slabsize }} GB
-      - Index mode   = {{ vdo_indexmode|default('dense') }}
+      - Index mode   = {{ vdo_indexmode | default('dense') }}
       - Index mem    = {{ vdo_indexmem }} GB

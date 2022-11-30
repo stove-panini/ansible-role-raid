@@ -1,12 +1,12 @@
 ---
-- name: Add VDO layer to {{ raid_name }}
-  vdo:
+- name: Add VDO layer
+  community.general.vdo:
     state: present
     name: "{{ raid_vdo_name }}"
     device: "{{ raid_device }}"
     logicalsize: "{{ vdo_logicalsize }}B"
     slabsize: "{{ vdo_slabsize }}G"
-    indexmode: "{{ vdo_indexmode|default('dense') }}"
+    indexmode: "{{ vdo_indexmode | default('dense') }}"
     indexmem: "{{ vdo_indexmem }}"
     compression: enabled
     deduplication: enabled
@@ -14,5 +14,5 @@
 
 # Overwrite raid_device var
 - name: Set raid_device
-  set_fact:
+  ansible.builtin.set_fact:
     raid_device: /dev/mapper/{{ raid_vdo_name }}

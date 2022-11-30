@@ -1,6 +1,6 @@
 ---
 - name: Ensure all block devices are present
-  assert:
+  ansible.builtin.assert:
     that:
       - item in ansible_devices
     fail_msg: Can't find block device /dev/{{ item }}
@@ -8,22 +8,23 @@
   loop: "{{ raid_block_devs }}"
 
 - name: Get mdraid device info
-  command:
+  ansible.builtin.command:
     cmd: mdadm --detail --scan
   register: mdraid_check
   changed_when: false
 
 - name: VDO checks
+  when: raid_create_vdo | bool
   block:
     - name: Ensure raid_vdo_purpose is correctly set
-      assert:
+      ansible.builtin.assert:
         that:
           - "'virtualization' in raid_vdo_purpose or 'object_storage' in raid_vdo_purpose"
         success_msg: "Using a {{ raid_vdo_multiplier }}x multiplier for VDO's logical volume size."
         fail_msg: "raid_vdo_purpose must be one of 'virtualization' or 'object_storage'"
 
     - name: Get existing VDO devices
-      command: vdostats
+      ansible.builtin.command:
+        cmd: vdostats
       changed_when: false
       register: vdo_check
-  when: raid_create_vdo|bool

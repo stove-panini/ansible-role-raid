@@ -1,4 +1,5 @@
 ---
-- name: refresh_device_facts
-  setup:
+- name: Refresh facts
+  ansible.builtin.setup:
+    fact_path: /etc/ansible/facts.d
     filter: ansible_devices
